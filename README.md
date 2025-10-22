@@ -34,5 +34,9 @@ Pruebas de concurrencia
 Se ejecutan varios clientes conectados simultáneamente al servidor, demostrando la atención paralela mediante hilos. Cada cliente realiza operaciones independientes como agregar, listar y actualizar calificaciones sin interferencias.
 ![Múltiples](laboratorio_2/imagenes/prueba_con_hilos_varios_clientes.png)
 
+PARTE 2
+Fragmento de código que implementa la creación, lectura y búsqueda de NRCs en el archivo CSV.
+Permite validar materias y procesar comandos de tipo LISTAR_NRC y BUSCAR_NRC.
 
+![codigo listar](laboratorio_2/imagenes/conexion_con_servidor.jpg).
 
