@@ -1,86 +1,109 @@
 import socket
 import json
 
-def mostrar_menu():
-    print("\n--- Menú de Calificaciones ---")
+# ---------------- Comunicación ----------------
+def enviar_comando(comando):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect(('localhost', 12345))
+    s.send(comando.encode('utf-8'))
+    data = s.recv(2048).decode('utf-8')
+    s.close()
+    return json.loads(data)
+
+# ---------------- Menú ----------------
+def menu():
+    print("\n--- MENÚ CLIENTE ---")
     print("1. Agregar calificación")
     print("2. Buscar por ID")
     print("3. Actualizar calificación")
-    print("4. Listar todas")
+    print("4. Listar todo")
     print("5. Eliminar por ID")
     print("6. Salir")
-    return input("Elija opción: ")
+    return input("Opción: ")
 
-def enviar_comando(comando):
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect(('localhost', 12345))
-    client_socket.send(comando.encode('utf-8'))
-    respuesta = client_socket.recv(1024).decode('utf-8')
-    client_socket.close()
-    return json.loads(respuesta)
+# ---------------- Función auxiliar para validar ID duplicado ----------------
+def existe_id(id_est):
+    """Consulta al servidor si el ID ya existe."""
+    res = enviar_comando(f"BUSCAR|{id_est}")
+    return res.get("status") == "ok"
 
+# ---------------- Programa principal ----------------
 while True:
-    opcion = mostrar_menu()
+    op = menu()
 
-    if opcion == "1":
-        id_est = input("ID: ")
-        nombre = input("Nombre: ")
-        materia = input("Materia: ")
-        calif = input("Calificación (0-10): ")
-        comando = f"AGREGAR|{id_est}|{nombre}|{materia}|{calif}"
-        res = enviar_comando(comando)
-        print(res.get("mensaje", "Error de respuesta."))
-
-
-    elif opcion == "2":
-        id_est = input("ID: ")
-        comando = f"BUSCAR|{id_est}"
-        res = enviar_comando(comando)
-        if res.get("status") == "ok":
-            data = res["data"]
-            print(f"Nombre: {data['Nombre']}, Materia: {data['Materia']}, Calificación: {data['Calificacion']}")
-        else:
-            print(res.get("mensaje", "Error."))
-
-    elif opcion == "3":
-        id_est = input("ID: ")
-        nueva_calif = input("Nueva calificación (0-20): ")
-        comando = f"ACTUALIZAR|{id_est}|{nueva_calif}"
-        res = enviar_comando(comando)
-        print(res.get("mensaje", "Error."))
-
-    elif opcion == "4":
-        comando = "LISTAR"
-        res = enviar_comando(comando)
-        if res.get("status") == "ok":
-            data = res["data"]
-            if data:
-                print("\n--- Lista de Calificaciones ---")
-                # Encabezados
-                print(f"{'ID_Estudiante':<15}{'Nombre':<20}{'Materia':<25}{'Calificación':<15}")
-                print("-" * 75)
-                # Filas
-                for row in data:
-                    print(f"{row['ID_Estudiante']:<15}{row['Nombre']:<20}{row['Materia']:<25}{row['Calificacion']:<15}")
-                print("-" * 75)
-                print(f"Total de registros: {len(data)}")
+    # ----------- OPCIÓN 1: Agregar calificación -----------
+    if op == "1":
+        # Verificar ID duplicado
+        while True:
+            id_est = input("ID: ")
+            if existe_id(id_est):
+                print(f"El ID {id_est} ya existe. Ingrese otro ID.")
             else:
-                print("No hay registros en el archivo.")
-        else:
-            print(res.get("mensaje", "Error."))
+                break
 
+        nombre = input("Nombre: ")
+        materia = input("Materia (ej. MAT101): ")
 
-        
+        # Validar calificación entre 0 y 10
+        while True:
+            try:
+                calif = float(input("Calificación (0-10): "))
+                if 0 <= calif <= 10:
+                    break
+                else:
+                    print("Calificación fuera de rango. Debe ser entre 0 y 10.")
+            except ValueError:
+                print("Ingrese un número válido.")
 
-    elif opcion == "5":
+        res = enviar_comando(f"AGREGAR|{id_est}|{nombre}|{materia}|{calif}")
+        print(res["mensaje"])
+
+    # ----------- OPCIÓN 2: Buscar por ID -----------
+    elif op == "2":
         id_est = input("ID: ")
-        comando = f"ELIMINAR|{id_est}"
-        res = enviar_comando(comando)
-        print(res.get("mensaje", "Error."))
+        res = enviar_comando(f"BUSCAR|{id_est}")
+        if res.get("status") == "ok":
+            data = res["data"]
+            print(f"ID: {data['ID_Estudiante']} | Nombre: {data['Nombre']} | Materia: {data['Materia']} | Calificación: {data['Calificacion']}")
+        else:
+            print("No se encontró el estudiante.")
 
-    elif opcion == "6":
-        print("Saliendo del programa...")
+    # ----------- OPCIÓN 3: Actualizar calificación -----------
+    elif op == "3":
+        id_est = input("ID del estudiante a actualizar: ")
+        if not existe_id(id_est):
+            print("Ese ID no existe.")
+        else:
+            while True:
+                try:
+                    nueva_calif = float(input("Nueva calificación (0-10): "))
+                    if 0 <= nueva_calif <= 10:
+                        break
+                    else:
+                        print("Debe estar entre 0 y 10.")
+                except ValueError:
+                    print("Ingrese un número válido.")
+            res = enviar_comando(f"ACTUALIZAR|{id_est}|{nueva_calif}")
+            print(res["mensaje"])
+
+    # ----------- OPCIÓN 4: Listar todos -----------
+    elif op == "4":
+        res = enviar_comando("LISTAR")
+        if res.get("status") == "ok":
+            print("\nLISTADO DE CALIFICACIONES:")
+            for row in res["data"]:
+                print(f"{row['ID_Estudiante']} - {row['Nombre']} - {row['Materia']} - {row['Calificacion']}")
+        else:
+            print(res["mensaje"])
+
+    # ----------- OPCIÓN 5: Eliminar por ID -----------
+    elif op == "5":
+        id_est = input("ID a eliminar: ")
+        res = enviar_comando(f"ELIMINAR|{id_est}")
+        print(res["mensaje"])
+
+    elif op == "6":
+        print("Saliendo del sistema...")
         break
-
     else:
-        print("Opción inválida.")
+        print("Opción inválida")
