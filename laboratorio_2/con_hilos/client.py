@@ -1,14 +1,15 @@
 import socket
 import json
+
 def mostrar_menu():
-    print("\n--- Men de Calificaciones ---")
-    print("1. Agregar calificacin")
+    print("\n--- Menú de Calificaciones ---")
+    print("1. Agregar calificación")
     print("2. Buscar por ID")
-    print("3. Actualizar calificacin")
+    print("3. Actualizar calificación")
     print("4. Listar todas")
     print("5. Eliminar por ID")
     print("6. Salir")
-    return input("Elija opcion: ")
+    return input("Elija opción: ")
 
 def enviar_comando(comando):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -20,38 +21,66 @@ def enviar_comando(comando):
 
 while True:
     opcion = mostrar_menu()
+
     if opcion == "1":
         id_est = input("ID: ")
         nombre = input("Nombre: ")
         materia = input("Materia: ")
-        calif = input("Calificacion: ")
-        res = enviar_comando(f"AGREGAR|{id_est}|{nombre}|{materia}|{calif}")
-        print(res["mensaje"])
+        calif = input("Calificación (0-10): ")
+        comando = f"AGREGAR|{id_est}|{nombre}|{materia}|{calif}"
+        res = enviar_comando(comando)
+        print(res.get("mensaje", "Error de respuesta."))
+
+
     elif opcion == "2":
         id_est = input("ID: ")
-        res = enviar_comando(f"BUSCAR|{id_est}")
-        if res["status"] == "ok":
-            print(f"Nombre: {res['data']['Nombre']}, Materia: {res['data']['Materia']}, Calificacin: {res['data']['Calificacion']}")
+        comando = f"BUSCAR|{id_est}"
+        res = enviar_comando(comando)
+        if res.get("status") == "ok":
+            data = res["data"]
+            print(f"Nombre: {data['Nombre']}, Materia: {data['Materia']}, Calificación: {data['Calificacion']}")
         else:
-            print(res["mensaje"])
+            print(res.get("mensaje", "Error."))
+
     elif opcion == "3":
         id_est = input("ID: ")
-        nueva_calif = input("Nueva calificacin: ")
-        res = enviar_comando(f"ACTUALIZAR|{id_est}|{nueva_calif}")
-        print(res["mensaje"])
+        nueva_calif = input("Nueva calificación (0-20): ")
+        comando = f"ACTUALIZAR|{id_est}|{nueva_calif}"
+        res = enviar_comando(comando)
+        print(res.get("mensaje", "Error."))
+
     elif opcion == "4":
-        res = enviar_comando("LISTAR")
-        if res["status"] == "ok":
-            for row in res["data"]:
-                print(row)
+        comando = "LISTAR"
+        res = enviar_comando(comando)
+        if res.get("status") == "ok":
+            data = res["data"]
+            if data:
+                print("\n--- Lista de Calificaciones ---")
+                # Encabezados
+                print(f"{'ID_Estudiante':<15}{'Nombre':<20}{'Materia':<25}{'Calificación':<15}")
+                print("-" * 75)
+                # Filas
+                for row in data:
+                    print(f"{row['ID_Estudiante']:<15}{row['Nombre']:<20}{row['Materia']:<25}{row['Calificacion']:<15}")
+                print("-" * 75)
+                print(f"Total de registros: {len(data)}")
+            else:
+                print("No hay registros en el archivo.")
         else:
-            print(res["mensaje"])
+            print(res.get("mensaje", "Error."))
+
+
+        
+
     elif opcion == "5":
         id_est = input("ID: ")
-        res = enviar_comando(f"ELIMINAR|{id_est}")
-        print(res["mensaje"])
-    elif opcion == "6":
-        break
-    else:
-        print("Opción inválida")
+        comando = f"ELIMINAR|{id_est}"
+        res = enviar_comando(comando)
+        print(res.get("mensaje", "Error."))
 
+    elif opcion == "6":
+        print("Saliendo del programa...")
+        break
+
+    else:
+        print("Opción inválida.")
