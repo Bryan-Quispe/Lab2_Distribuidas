@@ -54,3 +54,13 @@ Función consultar_nrc() que establece conexión con el servidor NRC mediante so
 Permite validar la existencia de una materia antes de registrar la calificación en el servidor principal.
 
 ![consultar nrc](laboratorio_2/imagenes/try.jpg).
+
+El cliente muestra un mensaje de validación al intentar registrar una materia inexistente o con el servidor NRC inactivo.
+Demuestra tolerancia a fallos y control de errores en la comunicación distribuida.
+
+![consultar nrc](laboratorio_2/imagenes/tolerancia.jpg).
+
+El servidor muestra el log JSON de una solicitud fallida al intentar agregar una materia inválida.
+Se evidencia el manejo de errores y la correcta respuesta enviada al cliente desde el hilo correspondiente.
+
+![consultar nrc](laboratorio_2/imagenes/manejoErrores.jpg).
