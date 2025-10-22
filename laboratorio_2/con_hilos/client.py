@@ -44,7 +44,7 @@ while True:
 
     elif opcion == "3":
         id_est = input("ID: ")
-        nueva_calif = input("Nueva calificación (0-20): ")
+        nueva_calif = input("Nueva calificación (0-10): ")
         comando = f"ACTUALIZAR|{id_est}|{nueva_calif}"
         res = enviar_comando(comando)
         print(res.get("mensaje", "Error."))
