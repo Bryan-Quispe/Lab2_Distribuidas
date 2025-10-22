@@ -53,11 +53,24 @@ while True:
         comando = "LISTAR"
         res = enviar_comando(comando)
         if res.get("status") == "ok":
-            print("\n--- Lista de Calificaciones ---")
-            for row in res["data"]:
-                print(row)
+            data = res["data"]
+            if data:
+                print("\n--- Lista de Calificaciones ---")
+                # Encabezados
+                print(f"{'ID_Estudiante':<15}{'Nombre':<20}{'Materia':<25}{'Calificación':<15}")
+                print("-" * 75)
+                # Filas
+                for row in data:
+                    print(f"{row['ID_Estudiante']:<15}{row['Nombre']:<20}{row['Materia']:<25}{row['Calificacion']:<15}")
+                print("-" * 75)
+                print(f"Total de registros: {len(data)}")
+            else:
+                print("No hay registros en el archivo.")
         else:
             print(res.get("mensaje", "Error."))
+
+
+        
 
     elif opcion == "5":
         id_est = input("ID: ")
