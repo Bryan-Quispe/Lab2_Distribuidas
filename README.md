@@ -7,6 +7,8 @@ CARLOS GRANDA
 KEVIN COLOMA
 ERICK MOREIRA
 
+Durante el desarrollo del laboratorio se presentaron diversos desafíos, especialmente en la comunicación entre servidores mediante sockets, ya que fue necesario garantizar la sincronización y validación entre el servidor de calificaciones y el servidor NRC. Se implementaron mecanismos de manejo de errores y validación para mantener la integridad de los datos ante fallos o desconexiones. Además, se aplicaron conceptos del teorema CAP, priorizando la consistencia y disponibilidad del sistema frente a la partición de red. La estructura modular y el código comentado facilitaron la comprensión y mantenimiento del proyecto, mientras que la organización en directorios (sin_hilos y con_hilos) permitió distinguir claramente las etapas de evolución del sistema, desde su versión secuencial hasta la implementación concurrente con hilos.
+
 PARTE 1 
 
 Verificacion del servidor sin hilos
