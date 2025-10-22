@@ -40,3 +40,17 @@ Permite validar materias y procesar comandos de tipo LISTAR_NRC y BUSCAR_NRC.
 
 ![codigo listar](laboratorio_2/imagenes/conexion_con_servidor.jpg).
 
+El cliente agrega calificaciones verificando NRCs válidos antes de registrarlos.
+Se muestra el listado actualizado con múltiples estudiantes y sus calificaciones almacenadas.
+
+![agrega datos](laboratorio_2/imagenes/ejecucion_lista_hilos_nrc.jpg).
+
+Fragmento de la función agregar_calificacion() que verifica la respuesta del servidor NRC.
+Previene el registro si la materia no existe o si el servidor NRC está fuera de servicio.
+
+![validar la existencia de una materia](laboratorio_2/imagenes/listar_buscar_nrcs.jpg).
+
+Función consultar_nrc() que establece conexión con el servidor NRC mediante sockets.
+Permite validar la existencia de una materia antes de registrar la calificación en el servidor principal.
+
+
