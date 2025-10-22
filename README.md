@@ -28,7 +28,7 @@ Pruebas de concurrencia
 Dos clientes
 ![Dos clientes procesando paralelo sin bloqueo](laboratorio_2/imagenes/prueba_con_hilos_2_clientes.png)
 Múltiples
-![Múltiples clientes procesando paralelo sin bloqueo](laboratorio_2/imagenes/prueba_con_hilos_2_varios_clientes.png)
+![Múltiples clientes procesando paralelo sin bloqueo](laboratorio_2/imagenes/prueba_con_hilos_varios_clientes.png)
 
 
 
