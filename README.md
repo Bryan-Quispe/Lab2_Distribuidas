@@ -66,3 +66,45 @@ El servidor muestra el log JSON de una solicitud fallida al intentar agregar una
 Se evidencia el manejo de errores y la correcta respuesta enviada al cliente desde el hilo correspondiente.
 
 ![consultar nrc](laboratorio_2/imagenes/manejoErrores.jpg).
+
+## Análisis de Limitaciones en Concurrencia
+En la implementación concurrente con hilos, se identifican posibles limitaciones como condiciones de carrera (race conditions) al acceder al archivo CSV compartido. Por ejemplo, si dos hilos intentan escribir simultáneamente (e.g., agregar calificaciones), podría ocurrir corrupción de datos o pérdida de registros. Para mitigar esto, se utiliza el módulo `csv` de Python, que no es thread-safe por defecto, pero en este caso, las operaciones de escritura se realizan de manera secuencial dentro de cada hilo, evitando conflictos directos. Sin embargo, en escenarios de alta concurrencia, se recomienda implementar locks (e.g., `threading.Lock`) para sincronizar accesos al archivo. Las pruebas realizadas demuestran que con pocos clientes (2-3), no se observan race conditions, pero en entornos de producción, esto podría escalar a problemas de rendimiento y consistencia.
+
+## Expansión del Informe Reflexivo (Análisis y Documentación)
+Además de los desafíos mencionados en la introducción, el teorema CAP se aplica priorizando consistencia (C) y disponibilidad (A) sobre partición (P), ya que el sistema rechaza operaciones inválidas (manteniendo consistencia) y maneja fallos de red sin detener el servicio (disponibilidad). Trade-offs incluyen latencia adicional en consultas NRC, pero se gana integridad de datos. Lecciones aprendidas: La modularidad facilita pruebas unitarias (e.g., funciones separadas para CRUD), y la estructura de directorios (sin_hilos vs. con_hilos) permite comparar versiones evolutivas, simplificando debugging y mantenimiento. El código comentado asegura legibilidad, como se ve en los archivos server.py y nrcs_server.py.
+
+## Evidencia de Código Comentado
+A continuación, fragmentos de código comentado para ilustrar la modularidad y documentación:
+
+### Desde server.py (con hilos):
+```python
+def manejar_cliente(client_socket, addr):
+    """
+    Atiende a un cliente en un hilo independiente.
+    - Recibe el comando del cliente
+    - Procesa el comando
+    - Envía la respuesta
+    """
+    hilo_actual = threading.current_thread().name
+    print(f"[SERVER] 🟢 Cliente conectado desde {addr} en hilo {hilo_actual}")
+    # ... resto del código
+```
+
+### Desde nrcs_server.py:
+```python
+def buscar_nrc(nrc):
+    """
+    Busca un NRC específico dentro del archivo CSV.
+    Si existe, retorna un diccionario con los datos.
+    Si no se encuentra, retorna un estado 'not_found'.
+    """
+    try:
+        with open(ARCHIVO_NRC, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row['NRC'] == nrc:
+                    return {"status": "ok", "data": row}
+        return {"status": "not_found", "mensaje": "NRC no existe"}
+    except Exception as e:
+        return {"status": "error", "mensaje": str(e)}
+```
