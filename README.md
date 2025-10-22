@@ -11,13 +11,16 @@ PARTE 1
 
 Verificacion del servidor sin hilos
 
-![Se puede verificar que el servidor inicio y se creo un .csv](laboratorio_2/imagenes/servidorsinhilos_levantado.png)
+![Ejecución del servidor secuencial server.py, mostrando que escucha correctamente en el puerto 12345. Se crea el archivo calificaciones.csv con el encabezado de columnas para registrar datos.](laboratorio_2/imagenes/servidorsinhilos_levantado.png)
 
 Verificacion del servidor con hilos
 
-![Se puede verificar que el servidor inicio y se creo un .csv](laboratorio_2/imagenes/levantamiento_server_con_hilos.png)
+![El servidor server.py en la carpeta con_hilos escucha en el puerto 12345 y atiende múltiples clientes simultáneamente mediante hilos.
+Cada conexión genera un hilo independiente para manejar solicitudes concurrentes de búsqueda y listado.](laboratorio_2/imagenes/levantamiento_server_con_hilos.png)
 
 Pruebas de menú
+
+El archivo calificaciones.csv registra correctamente los datos enviados por los clientes, garantizando persistencia en disco.
 Agregando un estudiante
 ![Agregar un estudiantes](laboratorio_2/imagenes/prueba_con_hilos_agregar.png)
 Buscar y Enlistar estudiante
@@ -26,9 +29,9 @@ Persistencia CSV
 ![Persistencia CSV](laboratorio_2/imagenes/persistencia_CSV_con_hilos.png)
 Pruebas de concurrencia
 Dos clientes
-![Dos clientes procesando paralelo sin bloqueo](laboratorio_2/imagenes/prueba_con_hilos_2_clientes.png)
+![El servidor concurrente atiende múltiples conexiones simultáneas, generando un hilo independiente para cada cliente conectado.](laboratorio_2/imagenes/prueba_con_hilos_2_clientes.png)
 Múltiples
-![Múltiples clientes procesando paralelo sin bloqueo](laboratorio_2/imagenes/prueba_con_hilos_varios_clientes.png)
+![Se ejecutan varios clientes conectados simultáneamente al servidor, demostrando la atención paralela mediante hilos. Cada cliente realiza operaciones independientes como agregar, listar y actualizar calificaciones sin interferencias.](laboratorio_2/imagenes/prueba_con_hilos_varios_clientes.png)
 
 
 
