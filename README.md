@@ -53,4 +53,4 @@ Previene el registro si la materia no existe o si el servidor NRC está fuera de
 Función consultar_nrc() que establece conexión con el servidor NRC mediante sockets.
 Permite validar la existencia de una materia antes de registrar la calificación en el servidor principal.
 
-
+![consultar nrc](laboratorio_2/imagenes/try.jpg).
