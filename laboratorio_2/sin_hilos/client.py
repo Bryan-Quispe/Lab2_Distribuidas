@@ -26,7 +26,7 @@ while True:
         id_est = input("ID: ")
         nombre = input("Nombre: ")
         materia = input("Materia: ")
-        calif = input("Calificación (0-20): ")
+        calif = input("Calificación (0-10): ")
         comando = f"AGREGAR|{id_est}|{nombre}|{materia}|{calif}"
         res = enviar_comando(comando)
         print(res.get("mensaje", "Error de respuesta."))
